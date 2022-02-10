@@ -1154,6 +1154,7 @@ func (p *Parlia) distributeToValidator(amount *big.Int, validator common.Address
 	// get packed data
 	data, err := p.validatorSetABI.Pack(method,
 		validator,
+		big.NewInt(int64(len(*txs))),
 	)
 	if err != nil {
 		log.Error("Unable to pack tx for deposit", "error", err)

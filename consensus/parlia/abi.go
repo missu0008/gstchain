@@ -442,11 +442,16 @@ const validatorSetABI = `
     },
     {
       "inputs": [
-        {
-          "internalType": "address",
-          "name": "valAddr",
-          "type": "address"
-        }
+		{
+			"internalType": "address",
+			"name": "valAddr",
+			"type": "address"
+		},
+		{
+			"internalType": "int256",
+			"name": "transactions",
+			"type": "int256"
+		}
       ],
       "name": "deposit",
       "outputs": [],
