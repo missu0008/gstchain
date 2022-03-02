@@ -79,6 +79,7 @@ var (
 		common.HexToAddress(systemcontracts.TokenHubContract):           true,
 		common.HexToAddress(systemcontracts.RelayerIncentivizeContract): true,
 		common.HexToAddress(systemcontracts.CrossChainContract):         true,
+		common.HexToAddress(systemcontracts.NominationVote):         true,
 	}
 )
 
@@ -462,6 +463,7 @@ func (p *Parlia) snapshot(chain consensus.ChainHeaderReader, number uint64, hash
 				hash := checkpoint.Hash()
 
 				validatorBytes := checkpoint.Extra[extraVanity : len(checkpoint.Extra)-extraSeal]
+				//validatorBytes := checkpoint.Extra[0 : len(checkpoint.Extra)]
 				// get validators from headers
 				validators, err := ParseValidators(validatorBytes)
 				if err != nil {
@@ -1047,26 +1049,38 @@ func (p *Parlia) distributeIncoming(val common.Address, state *state.StateDB, he
 	coinbase := header.Coinbase
 	balance := state.GetBalance(consensus.SystemAddress)
 	if balance.Cmp(common.Big0) <= 0 {
-		return nil
-	}
-	state.SetBalance(consensus.SystemAddress, big.NewInt(0))
-	state.AddBalance(coinbase, balance)
+		//给出块奖励
+		//fmt.Println("出块凭空构建奖励,当前高度",header.Number)
+		//balance = balance.Add(balance,big.NewInt(3000000000000000000))
+		temporary := big.NewInt(4761118327181075744)
+		state.AddBalance(coinbase, temporary)
+		//fmt.Println("出块凭空构建奖励",temporary)
 
-	doDistributeSysReward := state.GetBalance(common.HexToAddress(systemcontracts.SystemRewardContract)).Cmp(maxSystemBalance) < 0
-	if doDistributeSysReward {
-		var rewards = new(big.Int)
-		rewards = rewards.Rsh(balance, systemRewardPercent)
-		if rewards.Cmp(common.Big0) > 0 {
-			err := p.distributeToSystem(rewards, state, header, chain, txs, receipts, receivedTxs, usedGas, mining)
-			if err != nil {
-				return err
-			}
-			log.Trace("distribute to system reward pool", "block hash", header.Hash(), "amount", rewards)
-			balance = balance.Sub(balance, rewards)
-		}
+		return p.distributeToValidator(temporary, val, state, header, chain, txs, receipts, receivedTxs, usedGas, mining)
+		//return nil 
 	}
-	log.Trace("distribute to validator contract", "block hash", header.Hash(), "amount", balance)
-	return p.distributeToValidator(balance, val, state, header, chain, txs, receipts, receivedTxs, usedGas, mining)
+	//给出块奖励
+	temporary := big.NewInt(balance.Int64())
+	temporary.Add(temporary,big.NewInt(4761118327181075744))
+	//fmt.Println("出块+手续费奖励",temporary)
+	state.SetBalance(consensus.SystemAddress, big.NewInt(0))
+	state.AddBalance(coinbase, temporary)
+	//所有的奖励给validator contract合约
+	//doDistributeSysReward := state.GetBalance(common.HexToAddress(systemcontracts.SystemRewardContract)).Cmp(maxSystemBalance) < 0
+	//if doDistributeSysReward {
+	//	var rewards = new(big.Int)
+	//	rewards = rewards.Rsh(balance, systemRewardPercent)
+	//	if rewards.Cmp(common.Big0) > 0 {
+	//		err := p.distributeToSystem(rewards, state, header, chain, txs, receipts, receivedTxs, usedGas, mining)
+	//		if err != nil {
+	//			return err
+	//		}
+	//		log.Trace("distribute to system reward pool", "block hash", header.Hash(), "amount", rewards)
+	//		balance = balance.Sub(balance, rewards)
+	//	}
+	//}
+	log.Trace("distribute to validator contract", "block hash", header.Hash(), "amount", temporary)
+	return p.distributeToValidator(temporary, val, state, header, chain, txs, receipts, receivedTxs, usedGas, mining)
 }
 
 // slash spoiled validators
@@ -1103,6 +1117,7 @@ func (p *Parlia) initContract(state *state.StateDB, header *types.Header, chain 
 		systemcontracts.TokenHubContract,
 		systemcontracts.RelayerIncentivizeContract,
 		systemcontracts.CrossChainContract,
+		systemcontracts.NominationVote,
 	}
 	// get packed data
 	data, err := p.validatorSetABI.Pack(method)
@@ -1140,6 +1155,7 @@ func (p *Parlia) distributeToValidator(amount *big.Int, validator common.Address
 	// get packed data
 	data, err := p.validatorSetABI.Pack(method,
 		validator,
+		big.NewInt(int64(len(*txs))),
 	)
 	if err != nil {
 		log.Error("Unable to pack tx for deposit", "error", err)

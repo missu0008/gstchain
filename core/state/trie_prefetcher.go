@@ -20,6 +20,7 @@ import (
 	"sync"
 
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/common/gopool"
 	"github.com/ethereum/go-ethereum/log"
 	"github.com/ethereum/go-ethereum/metrics"
 )
@@ -105,7 +106,7 @@ func (p *triePrefetcher) close() {
 	for _, fetcher := range p.fetchers {
 		p.abortChan <- fetcher // safe to do multiple times
 		<-fetcher.term
-		if metrics.EnabledExpensive {
+		if metrics.Enabled {
 			if fetcher.root == p.root {
 				p.accountLoadMeter.Mark(int64(len(fetcher.seen)))
 				p.accountDupMeter.Mark(int64(fetcher.dups))
@@ -256,7 +257,9 @@ func newSubfetcher(db Database, root common.Hash, accountHash common.Hash) *subf
 		seen:        make(map[string]struct{}),
 		accountHash: accountHash,
 	}
-	go sf.loop()
+	gopool.Submit(func() {
+		sf.loop()
+	})
 	return sf
 }
 
@@ -319,7 +322,8 @@ func (sf *subfetcher) loop() {
 		trie, err = sf.db.OpenStorageTrie(sf.accountHash, sf.root)
 	}
 	if err != nil {
-		log.Debug("Trie prefetcher failed opening trie", "root", sf.root, "err", err)
+		log.Warn("Trie prefetcher failed opening trie", "root", sf.root, "err", err)
+		return
 	}
 	sf.trie = trie
 
@@ -328,18 +332,6 @@ func (sf *subfetcher) loop() {
 		select {
 		case <-sf.wake:
 			// Subfetcher was woken up, retrieve any tasks to avoid spinning the lock
-			if sf.trie == nil {
-				if sf.accountHash == emptyAddr {
-					sf.trie, err = sf.db.OpenTrie(sf.root)
-				} else {
-					// address is useless
-					sf.trie, err = sf.db.OpenStorageTrie(sf.accountHash, sf.root)
-				}
-				if err != nil {
-					continue
-				}
-			}
-
 			sf.lock.Lock()
 			tasks := sf.tasks
 			sf.tasks = nil

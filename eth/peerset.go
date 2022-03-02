@@ -20,7 +20,6 @@ import (
 	"errors"
 	"math/big"
 	"sync"
-	"time"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/eth/downloader"
@@ -39,26 +38,17 @@ var (
 	// to the peer set, but one with the same id already exists.
 	errPeerAlreadyRegistered = errors.New("peer already registered")
 
-	// errPeerWaitTimeout is returned if a peer waits extension for too long
-	errPeerWaitTimeout = errors.New("peer wait timeout")
-
 	// errPeerNotRegistered is returned if a peer is attempted to be removed from
 	// a peer set, but no peer with the given id exists.
 	errPeerNotRegistered = errors.New("peer not registered")
 
 	// errSnapWithoutEth is returned if a peer attempts to connect only on the
-	// snap protocol without advertising the eth main protocol.
+	// snap protocol without advertizing the eth main protocol.
 	errSnapWithoutEth = errors.New("peer connected on snap without compatible eth support")
 
 	// errDiffWithoutEth is returned if a peer attempts to connect only on the
-	// diff protocol without advertising the eth main protocol.
+	// diff protocol without advertizing the eth main protocol.
 	errDiffWithoutEth = errors.New("peer connected on diff without compatible eth support")
-)
-
-const (
-	// extensionWaitTimeout is the maximum allowed time for the extension wait to
-	// complete before dropping the connection as malicious.
-	extensionWaitTimeout = 10 * time.Second
 )
 
 // peerSet represents the collection of active peers currently participating in
@@ -179,16 +169,7 @@ func (ps *peerSet) waitSnapExtension(peer *eth.Peer) (*snap.Peer, error) {
 	ps.snapWait[id] = wait
 	ps.lock.Unlock()
 
-	select {
-	case peer := <-wait:
-		return peer, nil
-
-	case <-time.After(extensionWaitTimeout):
-		ps.lock.Lock()
-		delete(ps.snapWait, id)
-		ps.lock.Unlock()
-		return nil, errPeerWaitTimeout
-	}
+	return <-wait, nil
 }
 
 // waitDiffExtension blocks until all satellite protocols are connected and tracked
@@ -222,16 +203,7 @@ func (ps *peerSet) waitDiffExtension(peer *eth.Peer) (*diff.Peer, error) {
 	ps.diffWait[id] = wait
 	ps.lock.Unlock()
 
-	select {
-	case peer := <-wait:
-		return peer, nil
-
-	case <-time.After(extensionWaitTimeout):
-		ps.lock.Lock()
-		delete(ps.diffWait, id)
-		ps.lock.Unlock()
-		return nil, errPeerWaitTimeout
-	}
+	return <-wait, nil
 }
 
 func (ps *peerSet) GetDiffPeer(pid string) downloader.IDiffPeer {

@@ -59,13 +59,13 @@ func stateTestCmd(ctx *cli.Context) error {
 
 	// Configure the EVM logger
 	config := &vm.LogConfig{
-		EnableMemory:     !ctx.GlobalBool(DisableMemoryFlag.Name),
-		DisableStack:     ctx.GlobalBool(DisableStackFlag.Name),
-		DisableStorage:   ctx.GlobalBool(DisableStorageFlag.Name),
-		EnableReturnData: !ctx.GlobalBool(DisableReturnDataFlag.Name),
+		DisableMemory:     ctx.GlobalBool(DisableMemoryFlag.Name),
+		DisableStack:      ctx.GlobalBool(DisableStackFlag.Name),
+		DisableStorage:    ctx.GlobalBool(DisableStorageFlag.Name),
+		DisableReturnData: ctx.GlobalBool(DisableReturnDataFlag.Name),
 	}
 	var (
-		tracer   vm.EVMLogger
+		tracer   vm.Tracer
 		debugger *vm.StructLogger
 	)
 	switch {
@@ -101,8 +101,7 @@ func stateTestCmd(ctx *cli.Context) error {
 			_, state, err := test.Run(st, cfg, false)
 			// print state root for evmlab tracing
 			if ctx.GlobalBool(MachineFlag.Name) && state != nil {
-				root := state.IntermediateRoot(false)
-				fmt.Fprintf(os.Stderr, "{\"stateRoot\": \"%x\"}\n", root)
+				fmt.Fprintf(os.Stderr, "{\"stateRoot\": \"%x\"}\n", state.IntermediateRoot(false))
 			}
 			if err != nil {
 				// Test failed, mark as so and dump any state to aid debugging
