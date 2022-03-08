@@ -69,9 +69,7 @@ func makeTestState() (Database, common.Hash, []*testAccount) {
 		state.updateStateObject(obj)
 		accounts = append(accounts, acc)
 	}
-	state.Finalise(false)
-	state.AccountsIntermediateRoot()
-	root, _, _ := state.Commit(nil)
+	root, _, _ := state.Commit(false)
 
 	// Return the generated state
 	return db, root, accounts

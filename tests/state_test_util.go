@@ -198,9 +198,7 @@ func (t *StateTest) RunNoVerify(subtest StateSubtest, vmconfig vm.Config, snapsh
 	}
 
 	// Commit block
-	statedb.Finalise(config.IsEIP158(block.Number()))
-	statedb.AccountsIntermediateRoot()
-	statedb.Commit(nil)
+	statedb.Commit(config.IsEIP158(block.Number()))
 	// Add 0-value mining reward. This only makes a difference in the cases
 	// where
 	// - the coinbase suicided, or
@@ -228,9 +226,7 @@ func MakePreState(db ethdb.Database, accounts core.GenesisAlloc, snapshotter boo
 		}
 	}
 	// Commit and re-open to start with a clean state.
-	statedb.Finalise(false)
-	statedb.AccountsIntermediateRoot()
-	root, _, _ := statedb.Commit(nil)
+	root, _, _ := statedb.Commit(false)
 
 	var snaps *snapshot.Tree
 	if snapshotter {
