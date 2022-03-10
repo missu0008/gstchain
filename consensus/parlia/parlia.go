@@ -1050,23 +1050,6 @@ func (p *Parlia) distributeIncoming(val common.Address, state *state.StateDB, he
 	balance := state.GetBalance(consensus.SystemAddress)
 	if balance.Cmp(common.Big0) <= 0 {
 		//给出块奖励
-<<<<<<< HEAD
-		fmt.Println("出块凭空构建奖励,当前高度",header.Number)
-		//balance = balance.Add(balance,big.NewInt(3000000000000000000))
-		temporary := big.NewInt(3000000000000000000)
-		state.AddBalance(coinbase, temporary)
-		fmt.Println("出块凭空构建奖励",temporary)
-		return p.distributeToValidator(temporary, val, state, header, chain, txs, receipts, receivedTxs, usedGas, mining)
-		//return nil
-	}
-	//给出块奖励
-	temporary := big.NewInt(balance.Int64())
-	temporary.Add(temporary,big.NewInt(3000000000000000000))
-	fmt.Println("出块+手续费奖励",temporary)
-	state.SetBalance(consensus.SystemAddress, big.NewInt(0))
-	state.AddBalance(coinbase, temporary)
-
-=======
 		//fmt.Println("出块凭空构建奖励,当前高度",header.Number)
 		//balance = balance.Add(balance,big.NewInt(3000000000000000000))
 		temporary := big.NewInt(4761118327181075744)
@@ -1082,7 +1065,6 @@ func (p *Parlia) distributeIncoming(val common.Address, state *state.StateDB, he
 	//fmt.Println("出块+手续费奖励",temporary)
 	state.SetBalance(consensus.SystemAddress, big.NewInt(0))
 	state.AddBalance(coinbase, temporary)
->>>>>>> dev
 	//所有的奖励给validator contract合约
 	//doDistributeSysReward := state.GetBalance(common.HexToAddress(systemcontracts.SystemRewardContract)).Cmp(maxSystemBalance) < 0
 	//if doDistributeSysReward {
@@ -1097,13 +1079,8 @@ func (p *Parlia) distributeIncoming(val common.Address, state *state.StateDB, he
 	//		balance = balance.Sub(balance, rewards)
 	//	}
 	//}
-<<<<<<< HEAD
-	log.Trace("distribute to validator contract", "block hash", header.Hash(), "amount", balance)
-	return p.distributeToValidator(balance, val, state, header, chain, txs, receipts, receivedTxs, usedGas, mining)
-=======
 	log.Trace("distribute to validator contract", "block hash", header.Hash(), "amount", temporary)
 	return p.distributeToValidator(temporary, val, state, header, chain, txs, receipts, receivedTxs, usedGas, mining)
->>>>>>> dev
 }
 
 // slash spoiled validators
