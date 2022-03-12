@@ -37,9 +37,9 @@ var (
 	RialtoGenesisHash = common.HexToHash("0xaabe549bfa85c84f7aee9da7010b97453ad686f2c2d8ce00503d1a00c72cad54")
 	YoloV3GenesisHash = common.HexToHash("0xf1f2876e8500c77afcc03228757b39477eceffccf645b734967fe3c7e16967b7")
 	//新增GST主网
-	GSTGenesisHash = common.HexToHash("0xf1f2876e8500c77afcc03228757b39477eceffccf645b734967fe3c7e16967b7")
+	GSTGenesisHash = common.HexToHash("0x2ad6b8fd521fd466a8da529fb13d8a499df7d070b7e520abb437fee889a80757")
 	//GST测试网
-	GSTTestGenesisHash = common.HexToHash("0xb608c5acb47d399ccf3529ce141e265bf7f9795b90bcba9167a475ff570bf866")
+	GSTTestGenesisHash = common.HexToHash("0x86f9e654520162d0d28beafce94b1f30aa6f11a07bcf1fd930023e0e1d0c6ad6")
 )
 
 // TrustedCheckpoints associates each known checkpoint with the genesis hash of
@@ -338,7 +338,7 @@ var (
 		EIP150Block:         big.NewInt(0),
 		EIP155Block:         big.NewInt(0),
 		EIP158Block:         big.NewInt(0),
-		ByzantiumBlock:      big.NewInt(49999),
+		ByzantiumBlock:      big.NewInt(330000),
 		ConstantinopleBlock: big.NewInt(0),
 		PetersburgBlock:     big.NewInt(0),
 		IstanbulBlock:       big.NewInt(0),
@@ -348,7 +348,7 @@ var (
 		BrunoBlock:          big.NewInt(0),
 		Parlia: &ParliaConfig{
 			Period: 3,
-			Epoch:  20,
+			Epoch: 20,
 		},
 	}
 
@@ -361,7 +361,7 @@ var (
 		EIP150Block:         big.NewInt(0),
 		EIP155Block:         big.NewInt(0),
 		EIP158Block:         big.NewInt(0),
-		ByzantiumBlock:      big.NewInt(600),
+		ByzantiumBlock:      big.NewInt(285000),
 		ConstantinopleBlock: big.NewInt(0),
 		PetersburgBlock:     big.NewInt(0),
 		IstanbulBlock:       big.NewInt(0),
@@ -371,7 +371,7 @@ var (
 		BrunoBlock:          big.NewInt(0),
 		Parlia: &ParliaConfig{
 			Period: 3,
-			Epoch:  200000, //测试
+			Epoch:  20,
 		},
 	}
 
