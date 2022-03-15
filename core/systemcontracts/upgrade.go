@@ -95,30 +95,30 @@ func UpgradeBuildInSystemContract(config *params.ChainConfig, blockNumber *big.I
 	//fmt.Println("打印ByzantiumBlock:",config.ByzantiumBlock)
 	//fmt.Println("打印config:",config)
 	logger := log.New("system-contract-upgrade", network)
-	if config.IsOnRamanujan(blockNumber) {
-		applySystemContractUpgrade(ramanujanUpgrade[network], blockNumber, statedb, logger)
-	}
-
-	if config.IsOnNiels(blockNumber) {
-		applySystemContractUpgrade(nielsUpgrade[network], blockNumber, statedb, logger)
-	}
-
-	if config.IsOnMirrorSync(blockNumber) {
-		applySystemContractUpgrade(mirrorUpgrade[network], blockNumber, statedb, logger)
-	}
-
-	if config.IsOnBruno(blockNumber) {
-		applySystemContractUpgrade(brunoUpgrade[network], blockNumber, statedb, logger)
-	}
+	//if config.IsOnRamanujan(blockNumber) {
+	//	applySystemContractUpgrade(ramanujanUpgrade[network], blockNumber, statedb, logger)
+	//}
+	//
+	//if config.IsOnNiels(blockNumber) {
+	//	applySystemContractUpgrade(nielsUpgrade[network], blockNumber, statedb, logger)
+	//}
+	//
+	//if config.IsOnMirrorSync(blockNumber) {
+	//	applySystemContractUpgrade(mirrorUpgrade[network], blockNumber, statedb, logger)
+	//}
+	//
+	//if config.IsOnBruno(blockNumber) {
+	//	applySystemContractUpgrade(brunoUpgrade[network], blockNumber, statedb, logger)
+	//}
 
 	//主网升级合约
-	if config.IsOnByzantium(blockNumber) {
+	if config.IsOnBruno(blockNumber) {
 		fmt.Println("开始升级主网合约，当前区块高度",blockNumber)
 		applySystemContractUpgrade(ByzantiumUpgrade[network],blockNumber, statedb, logger)
 	}
 
 	//gst测试网升级合约
-	if config.IsOnByzantium(blockNumber) {
+	if config.IsOnBruno(blockNumber) {
 		fmt.Println("开始升级测试网合约，当前区块高度",blockNumber)
 		applySystemContractUpgrade(ByzantiumUpgrade[network],blockNumber, statedb, logger)
 	}
