@@ -354,14 +354,14 @@ var (
 
 	//GST测试网配置
 	GstChainTestConfig = &ChainConfig{
-		ChainID:             big.NewInt(8197),
+		ChainID:             big.NewInt(8198),
 		HomesteadBlock:      big.NewInt(0),
 		DAOForkBlock:        nil,
 		DAOForkSupport:      true,
 		EIP150Block:         big.NewInt(0),
 		EIP155Block:         big.NewInt(0),
 		EIP158Block:         big.NewInt(0),
-		ByzantiumBlock:      big.NewInt(285000),
+		ByzantiumBlock:      big.NewInt(281000),
 		ConstantinopleBlock: big.NewInt(0),
 		PetersburgBlock:     big.NewInt(0),
 		IstanbulBlock:       big.NewInt(0),
