@@ -111,18 +111,12 @@ func UpgradeBuildInSystemContract(config *params.ChainConfig, blockNumber *big.I
 	//	applySystemContractUpgrade(brunoUpgrade[network], blockNumber, statedb, logger)
 	//}
 
-	//主网升级合约
+	//升级合约
 	if config.IsOnBruno(blockNumber) {
-		fmt.Println("开始升级主网合约，当前区块高度",blockNumber)
+		fmt.Println("开始升级合约，当前区块高度",blockNumber)
+		fmt.Println("当前网络",network)
 		applySystemContractUpgrade(ByzantiumUpgrade[network],blockNumber, statedb, logger)
 	}
-
-	//gst测试网升级合约
-	if config.IsOnBruno(blockNumber) {
-		fmt.Println("开始升级测试网合约，当前区块高度",blockNumber)
-		applySystemContractUpgrade(ByzantiumUpgrade[network],blockNumber, statedb, logger)
-	}
-
 
 	/*
 		apply other upgrades
