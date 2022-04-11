@@ -36,10 +36,6 @@ var (
 	ChapelGenesisHash = common.HexToHash("0x6d3c66c5357ec91d5c43af47e234a939b22557cbb552dc45bebbceeed90fbe34")
 	RialtoGenesisHash = common.HexToHash("0xaabe549bfa85c84f7aee9da7010b97453ad686f2c2d8ce00503d1a00c72cad54")
 	YoloV3GenesisHash = common.HexToHash("0xf1f2876e8500c77afcc03228757b39477eceffccf645b734967fe3c7e16967b7")
-	//新增GST主网
-	GSTGenesisHash = common.HexToHash("0x2ad6b8fd521fd466a8da529fb13d8a499df7d070b7e520abb437fee889a80757")
-	//GST测试网
-	GSTTestGenesisHash = common.HexToHash("0x86f9e654520162d0d28beafce94b1f30aa6f11a07bcf1fd930023e0e1d0c6ad6")
 )
 
 // TrustedCheckpoints associates each known checkpoint with the genesis hash of
@@ -329,53 +325,6 @@ var (
 		},
 	}
 
-	//GST主网配置
-	GstChainConfig = &ChainConfig{
-		ChainID:             big.NewInt(8199),
-		HomesteadBlock:      big.NewInt(0),
-		DAOForkBlock:        nil,
-		DAOForkSupport:      true,
-		EIP150Block:         big.NewInt(0),
-		EIP155Block:         big.NewInt(0),
-		EIP158Block:         big.NewInt(0),
-		ByzantiumBlock:      big.NewInt(0),
-		ConstantinopleBlock: big.NewInt(0),
-		PetersburgBlock:     big.NewInt(0),
-		IstanbulBlock:       big.NewInt(0),
-		RamanujanBlock:      big.NewInt(468000),
-		NielsBlock:          big.NewInt(0),
-		MirrorSyncBlock:     big.NewInt(0),
-		BrunoBlock:          big.NewInt(420000),
-		Parlia: &ParliaConfig{
-			Period: 3,
-			Epoch: 20,
-		},
-	}
-
-	//GST测试网配置
-	GstChainTestConfig = &ChainConfig{
-		ChainID:             big.NewInt(8198),
-		HomesteadBlock:      big.NewInt(0),
-		DAOForkBlock:        nil,
-		DAOForkSupport:      true,
-		EIP150Block:         big.NewInt(0),
-		EIP155Block:         big.NewInt(0),
-		EIP158Block:         big.NewInt(0),
-		ByzantiumBlock:      big.NewInt(0),
-		ConstantinopleBlock: big.NewInt(0),
-		PetersburgBlock:     big.NewInt(0),
-		IstanbulBlock:       big.NewInt(0),
-		RamanujanBlock:      big.NewInt(363000),
-		NielsBlock:          big.NewInt(0),
-		MirrorSyncBlock:     big.NewInt(0),
-		BrunoBlock:          big.NewInt(281000),
-		Parlia: &ParliaConfig{
-			Period: 3,
-			Epoch:  20,
-		},
-	}
-
-
 	// AllEthashProtocolChanges contains every protocol change (EIPs) introduced
 	// and accepted by the Ethereum core developers into the Ethash consensus.
 	//
@@ -528,7 +477,7 @@ func (c *ChainConfig) String() string {
 	default:
 		engine = "unknown"
 	}
-	return fmt.Sprintf("{ChainID: %v Homestead: %v DAO: %v DAOSupport: %v EIP150: %v EIP155: %v EIP158: %v Byzantium: %v Constantinople: %v Petersburg: %v Istanbul: %v, Muir Glacier: %v, Ramanujan: %v, Niels: %v, MirrorSync: %v, Bruno: %v, Berlin: %v, YOLO v3: %v, Engine: %v,Epoch: %d,Period: %d}",
+	return fmt.Sprintf("{ChainID: %v Homestead: %v DAO: %v DAOSupport: %v EIP150: %v EIP155: %v EIP158: %v Byzantium: %v Constantinople: %v Petersburg: %v Istanbul: %v, Muir Glacier: %v, Ramanujan: %v, Niels: %v, MirrorSync: %v, Bruno: %v, Berlin: %v, YOLO v3: %v, Engine: %v}",
 		c.ChainID,
 		c.HomesteadBlock,
 		c.DAOForkBlock,
@@ -548,8 +497,6 @@ func (c *ChainConfig) String() string {
 		c.BerlinBlock,
 		c.YoloV3Block,
 		engine,
-		c.Parlia.Epoch,
-		c.Parlia.Period,
 	)
 }
 
@@ -581,10 +528,6 @@ func (c *ChainConfig) IsEIP158(num *big.Int) bool {
 // IsByzantium returns whether num is either equal to the Byzantium fork block or greater.
 func (c *ChainConfig) IsByzantium(num *big.Int) bool {
 	return isForked(c.ByzantiumBlock, num)
-}
-
-func (c *ChainConfig) IsOnByzantium(num *big.Int) bool {
-	return configNumEqual(c.ByzantiumBlock, num)
 }
 
 // IsConstantinople returns whether num is either equal to the Constantinople fork block or greater.

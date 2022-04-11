@@ -220,7 +220,7 @@ func SetupGenesisBlockWithOverride(db ethdb.Database, genesis *Genesis, override
 	// config is supplied. These chains would get AllProtocolChanges (and a compat error)
 	// if we just continued here.
 	// The full node of two BSC testnets may run without genesis file after been inited.
-	if genesis == nil && stored != params.MainnetGenesisHash && stored != params.GSTGenesisHash && stored != params.GSTTestGenesisHash &&
+	if genesis == nil && stored != params.MainnetGenesisHash &&
 		stored != params.ChapelGenesisHash && stored != params.RialtoGenesisHash && stored != params.BSCGenesisHash {
 		return storedcfg, stored, nil
 	}
@@ -258,10 +258,6 @@ func (g *Genesis) configOrDefault(ghash common.Hash) *params.ChainConfig {
 		return params.RialtoChainConfig
 	case ghash == params.YoloV3GenesisHash:
 		return params.YoloV3ChainConfig
-	case ghash == params.GSTGenesisHash:
-		return params.GstChainConfig
-	case ghash == params.GSTTestGenesisHash:
-		return params.GstChainTestConfig
 	default:
 		return params.AllEthashProtocolChanges
 	}
@@ -302,7 +298,7 @@ func (g *Genesis) ToBlock(db ethdb.Database) *types.Block {
 	if g.Difficulty == nil {
 		head.Difficulty = params.GenesisDifficulty
 	}
-	statedb.Commit(false)
+	statedb.Commit(nil)
 	statedb.Database().TrieDB().Commit(root, true, nil)
 
 	return types.NewBlock(head, nil, nil, nil, trie.NewStackTrie(nil))

@@ -21,7 +21,6 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
-	"github.com/ethereum/go-ethereum/log"
 	"math/big"
 	"sort"
 
@@ -278,7 +277,6 @@ func (s *Snapshot) indexOfVal(validator common.Address) int {
 func (s *Snapshot) supposeValidator() common.Address {
 	validators := s.validators()
 	index := (s.Number + 1) % uint64(len(validators))
-	log.Info("打印 ","validators:",validators,"打印index:",index)
 	return validators[index]
 }
 
