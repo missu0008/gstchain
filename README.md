@@ -1,2 +1,2 @@
 # gstchain
-A GST Chain client based on the go-ethereum fork
+GST Chain starts its development based on go language.
