@@ -278,7 +278,7 @@ func (s *Snapshot) indexOfVal(validator common.Address) int {
 func (s *Snapshot) supposeValidator() common.Address {
 	validators := s.validators()
 	index := (s.Number + 1) % uint64(len(validators))
-	log.Info("打印 ","validators:",validators,"打印index:",index)
+	log.Debug("打印 ","validators:",validators,"打印index:",index)
 	return validators[index]
 }
 

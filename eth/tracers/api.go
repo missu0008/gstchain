@@ -853,6 +853,10 @@ func (api *API) traceTx(ctx context.Context, message core.Message, txctx *txTrac
 	// Call Prepare to clear out the statedb access list
 	statedb.Prepare(txctx.hash, txctx.block, txctx.index)
 
+	if message.To().String() == "0x0000000000000000000000000000000000001000"{
+		return nil, nil
+	}
+
 	result, err := core.ApplyMessage(vmenv, message, new(core.GasPool).AddGas(message.Gas()))
 	if err != nil {
 		return nil, fmt.Errorf("tracing failed: %w", err)
