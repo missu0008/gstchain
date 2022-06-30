@@ -79,7 +79,6 @@ var (
 		common.HexToAddress(systemcontracts.TokenHubContract):           true,
 		common.HexToAddress(systemcontracts.RelayerIncentivizeContract): true,
 		common.HexToAddress(systemcontracts.CrossChainContract):         true,
-		common.HexToAddress(systemcontracts.NominationVote):         true,
 	}
 )
 
@@ -463,7 +462,6 @@ func (p *Parlia) snapshot(chain consensus.ChainHeaderReader, number uint64, hash
 				hash := checkpoint.Hash()
 
 				validatorBytes := checkpoint.Extra[extraVanity : len(checkpoint.Extra)-extraSeal]
-				//validatorBytes := checkpoint.Extra[0 : len(checkpoint.Extra)]
 				// get validators from headers
 				validators, err := ParseValidators(validatorBytes)
 				if err != nil {
@@ -1057,7 +1055,7 @@ func (p *Parlia) distributeIncoming(val common.Address, state *state.StateDB, he
 		//fmt.Println("出块凭空构建奖励",temporary)
 
 		return p.distributeToValidator(temporary, val, state, header, chain, txs, receipts, receivedTxs, usedGas, mining)
-		//return nil 
+		//return nil
 	}
 	//给出块奖励
 	temporary := big.NewInt(balance.Int64())

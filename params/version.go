@@ -19,7 +19,7 @@ package params
 import (
 	"fmt"
 )
-
+//当前客户端版本
 const (
 	VersionMajor = 1  // Major version component of the current release
 	VersionMinor = 1  // Minor version component of the current release
