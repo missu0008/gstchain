@@ -688,21 +688,21 @@ func (p *Parlia) Finalize(chain consensus.ChainHeaderReader, header *types.Heade
 	}
 	if header.Difficulty.Cmp(diffInTurn) != 0 {
 		spoiledVal := snap.supposeValidator()
-		signedRecently := false
+		//signedRecently := false
 		for _, recent := range snap.Recents {
 			if recent == spoiledVal {
-				signedRecently = true
+				//signedRecently = true
 				break
 			}
 		}
-		if !signedRecently {
-			log.Trace("slash validator", "block hash", header.Hash(), "address", spoiledVal)
-			err = p.slash(spoiledVal, state, header, cx, txs, receipts, systemTxs, usedGas, false)
-			if err != nil {
-				// it is possible that slash validator failed because of the slash channel is disabled.
-				log.Error("slash validator failed", "block hash", header.Hash(), "address", spoiledVal)
-			}
-		}
+		//if !signedRecently {
+		//	log.Trace("slash validator", "block hash", header.Hash(), "address", spoiledVal)
+		//	err = p.slash(spoiledVal, state, header, cx, txs, receipts, systemTxs, usedGas, false)
+		//	if err != nil {
+		//		// it is possible that slash validator failed because of the slash channel is disabled.
+		//		log.Error("slash validator failed", "block hash", header.Hash(), "address", spoiledVal)
+		//	}
+		//}
 	}
 	val := header.Coinbase
 	err = p.distributeIncoming(val, state, header, cx, txs, receipts, systemTxs, usedGas, false)
@@ -740,20 +740,20 @@ func (p *Parlia) FinalizeAndAssemble(chain consensus.ChainHeaderReader, header *
 			return nil, nil, err
 		}
 		spoiledVal := snap.supposeValidator()
-		signedRecently := false
+		//signedRecently := false
 		for _, recent := range snap.Recents {
 			if recent == spoiledVal {
-				signedRecently = true
+				//signedRecently = true
 				break
 			}
 		}
-		if !signedRecently {
-			err = p.slash(spoiledVal, state, header, cx, &txs, &receipts, nil, &header.GasUsed, true)
-			if err != nil {
-				// it is possible that slash validator failed because of the slash channel is disabled.
-				log.Error("slash validator failed", "block hash", header.Hash(), "address", spoiledVal)
-			}
-		}
+		//if !signedRecently {
+		//	err = p.slash(spoiledVal, state, header, cx, &txs, &receipts, nil, &header.GasUsed, true)
+		//	if err != nil {
+		//		// it is possible that slash validator failed because of the slash channel is disabled.
+		//		log.Error("slash validator failed", "block hash", header.Hash(), "address", spoiledVal)
+		//	}
+		//}
 	}
 	err := p.distributeIncoming(p.val, state, header, cx, &txs, &receipts, nil, &header.GasUsed, true)
 	if err != nil {
