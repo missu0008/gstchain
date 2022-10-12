@@ -721,13 +721,12 @@ func containsTx(block *types.Block, hash common.Hash) bool {
 // TraceTransaction returns the structured logs created during the execution of EVM
 // and returns them as a JSON object.
 func (api *API) TraceTransaction(ctx context.Context, hash common.Hash, config *TraceConfig) (interface{}, error) {
-	//println("hash前 :  ",hash.Hex())
 	//预执行一下，如果是出块奖励改成一个可以查询的交易，让扫块那边过
-	hash , error := api.PreHash(ctx,hash,config)
-	if error != nil {
-		return nil, error
+	hash, err := api.PreHash(ctx, hash, config)
+	if err != nil {
+		return nil, err
 	}
-	//println("hash :  ",hash.String())
+
 	_, blockHash, blockNumber, index, err := api.backend.GetTransaction(ctx, hash)
 	if err != nil {
 		return nil, err
@@ -921,16 +920,18 @@ func (api *API) PreHash(ctx context.Context, hash common.Hash, config *TraceConf
 		return hash, err
 	}
 	msg, vmctx, _, err := api.backend.StateAtTransaction(ctx, block, int(index), reexec)
+	if err != nil {
+		return hash, err
+	}
 
-	if msg.To().String() == "0x0000000000000000000000000000000000001000"&& vmctx.Coinbase.String() == msg.From().String() {
+	if msg != nil && msg.To() != nil && msg.To().String() == "0x0000000000000000000000000000000000001000" && vmctx.Coinbase.String() == msg.From().String() {
 		//正式网存在hash
 		convStr := "679dcd13b083a596ae198a067d9123ac3f9bac87b2c84ca5e0a142a9e891bb1b"
 		bytes32, _ := hex.DecodeString(convStr)
-		bytes32 = append([]byte("0x"),bytes32[:]...)
+		bytes32 = append([]byte("0x"), bytes32[:]...)
 		hash.SetBytes(bytes32)
-		//fmt.Println("hash转换: ",hash.String())
 	}
-	return hash,nil
+	return hash, nil
 }
 
 // APIs return the collection of RPC services the tracer package offers.
